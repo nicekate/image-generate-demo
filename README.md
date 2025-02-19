@@ -2,6 +2,8 @@
 
 这是一个使用 端脑云 DeepSeek R1 蒸馏模型和 Flux 模型生成图片的 Web 应用演示项目。
 
+粉丝福利：现在用我的邀请链接 https://cephalon.cloud/share/register-landing?invite_id=X46Dzv 或者邀请码 X46Dzv，还有我专属的注册奖励，还可以额外免费送5000端脑值
+
 ## 功能特点
 
 - 基于文本提示生成图片
