@@ -1,0 +1,78 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+env/
+venv/
+ENV/
+.env
+*.egg
+*.egg-info
+dist/
+build/
+eggs/
+parts/
+bin/
+lib/
+share/
+sdist*
+*.whl
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+
+# Installer logs
+pip-log.txt
+pip-delete-this.txt
+pip-wheel-metadata/
+pip-download-cache/
+*.dist-info/
+*.egg-info/
+.installed.cfg
+*.pyd
+*.so
+
+# Environments
+.env
+.venv
+venv
+ENV
+environment/
+conda
+conda-env/
+.conda-env/
+pyvenv.cfg
+*.envrc
+*.direnv
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version
+*.python-version
+
+# Editor/IDE backups, autosaves, and temporary files
+*~
+*.swp
+.DS_Store
+.vscode/
+.idea/
+*.secret
+*.log
+*.sqlite3
+*.db
+
+# Node.js
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Static files
+static/images/*

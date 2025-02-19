@@ -1,0 +1,344 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    color: #2c3e50;
+    margin: 1.5rem 0 1rem;
+    font-size: 1.2rem;
+}
+
+.step-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.input-section {
+    margin-bottom: 1rem;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+}
+
+/* AI思考过程样式 */
+.think-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.think-box {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #2ecc71;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    color: #2c3e50;
+}
+
+.think-box p {
+    margin-bottom: 0.8rem;
+}
+
+.think-box p:last-child {
+    margin-bottom: 0;
+}
+
+/* 最终提示词样式 */
+.prompt-section {
+    margin-bottom: 2rem;
+}
+
+.prompt-box {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    margin-bottom: 1.5rem;
+    white-space: pre-wrap;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* 按钮样式 */
+button, .button {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+}
+
+button:hover, .button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+button.secondary {
+    background-color: #95a5a6;
+    margin-left: 1rem;
+}
+
+button.secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.hidden {
+    display: none;
+}
+
+/* 加载提示样式 */
+#loadingIndicator {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 图片结果样式 */
+.image-section {
+    text-align: center;
+}
+
+#generatedImage {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+.image-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+#loadingText {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        margin: 1rem auto;
+    }
+    
+    .step-section {
+        padding: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    button, .button {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+    
+    button.secondary {
+        margin-left: 0;
+    }
+    
+    .image-actions {
+        flex-direction: column;
+    }
+    
+    .think-box, .prompt-box {
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+.aspect-ratio-group {
+    margin: 1rem 0;
+}
+
+.aspect-ratio-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.aspect-ratio-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.aspect-ratio-option:hover {
+    background: rgba(0,0,0,0.05);
+}
+
+.aspect-ratio-option input[type="radio"] {
+    display: none;
+}
+
+.aspect-ratio-option input[type="radio"]:checked + .ratio-box {
+    border-color: #2196F3;
+}
+
+.aspect-ratio-option input[type="radio"]:checked + .ratio-box + .ratio-text {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+.ratio-box {
+    width: 60px;
+    height: 60px;
+    border: 2px solid #ccc;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    position: relative;
+}
+
+.ratio-box.square {
+    /* 1:1 */
+    width: 60px;
+    height: 60px;
+}
+
+.ratio-box.landscape {
+    /* 16:9 */
+    width: 64px;
+    height: 36px;
+}
+
+.ratio-box.portrait {
+    /* 9:16 */
+    width: 36px;
+    height: 64px;
+}
+
+.ratio-box.landscape-43 {
+    /* 4:3 */
+    width: 60px;
+    height: 45px;
+}
+
+.ratio-box.portrait-34 {
+    /* 3:4 */
+    width: 45px;
+    height: 60px;
+}
+
+.ratio-text {
+    font-size: 0.9rem;
+    text-align: center;
+    color: #666;
+}
+
+.mode-switch {
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.mode-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.mode-option input[type="radio"] {
+    margin: 0;
+}
+
+.mode-option span {
+    font-size: 0.95rem;
+    color: #333;
+}

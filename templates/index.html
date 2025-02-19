@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI图片生成器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI图片生成器</h1>
+        
+        <!-- 步骤1：输入描述生成提示词 -->
+        <div class="step-section">
+            <h2>第一步：输入描述，生成AI提示词</h2>
+            <div class="input-section">
+                <div class="mode-switch">
+                    <label class="mode-option">
+                        <input type="radio" name="input_mode" value="theme" checked>
+                        <span>输入主题描述</span>
+                    </label>
+                    <label class="mode-option">
+                        <input type="radio" name="input_mode" value="prompt">
+                        <span>直接输入提示词</span>
+                    </label>
+                </div>
+                <form id="promptForm">
+                    <textarea 
+                        id="userPrompt" 
+                        name="prompt" 
+                        placeholder="请输入你想要生成的图片描述..."
+                        required></textarea>
+                    <div class="form-group aspect-ratio-group">
+                        <label>选择图片尺寸:</label>
+                        <div class="aspect-ratio-options">
+                            <label class="aspect-ratio-option">
+                                <input type="radio" name="aspect_ratio" value="1:1" checked>
+                                <span class="ratio-box square"></span>
+                                <span class="ratio-text">1:1 正方形<br>(1024×1024)</span>
+                            </label>
+                            <label class="aspect-ratio-option">
+                                <input type="radio" name="aspect_ratio" value="16:9">
+                                <span class="ratio-box landscape"></span>
+                                <span class="ratio-text">16:9 宽屏<br>(1344×768)</span>
+                            </label>
+                            <label class="aspect-ratio-option">
+                                <input type="radio" name="aspect_ratio" value="9:16">
+                                <span class="ratio-box portrait"></span>
+                                <span class="ratio-text">9:16 竖屏<br>(768×1344)</span>
+                            </label>
+                            <label class="aspect-ratio-option">
+                                <input type="radio" name="aspect_ratio" value="4:3">
+                                <span class="ratio-box landscape-43"></span>
+                                <span class="ratio-text">4:3 宽屏<br>(1024×768)</span>
+                            </label>
+                            <label class="aspect-ratio-option">
+                                <input type="radio" name="aspect_ratio" value="3:4">
+                                <span class="ratio-box portrait-34"></span>
+                                <span class="ratio-text">3:4 竖屏<br>(768×1024)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" id="generatePromptBtn">生成AI提示词</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 步骤2：AI分析结果 -->
+        <div id="promptResult" class="step-section hidden">
+            <h2>第二步：AI分析结果</h2>
+            
+            <!-- AI思考过程 -->
+            <div class="think-section">
+                <h3>AI的思考过程：</h3>
+                <div id="aiThinkContent" class="think-box"></div>
+            </div>
+
+            <!-- 最终提示词 -->
+            <div class="prompt-section">
+                <h3>最终生成的提示词：</h3>
+                <p id="aiFinalPrompt" class="prompt-box"></p>
+                <div class="action-buttons">
+                    <button id="modifyPromptBtn" class="secondary">返回修改描述</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加载提示 -->
+        <div id="loadingIndicator" class="hidden">
+            <div class="spinner"></div>
+            <p id="loadingText">正在处理中，请稍候...</p>
+        </div>
+
+        <!-- 图片结果显示 -->
+        <div id="imageResult" class="step-section hidden">
+            <h2>生成结果</h2>
+            <div class="image-section">
+                <img id="generatedImage" src="" alt="生成的图片">
+                <div class="image-actions">
+                    <a id="downloadBtn" href="#" class="button" download>下载图片</a>
+                    <button id="startOverBtn" class="secondary">重新开始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const promptForm = document.getElementById('promptForm');
+        const promptResult = document.getElementById('promptResult');
+        const imageResult = document.getElementById('imageResult');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const loadingText = document.getElementById('loadingText');
+        const aiThinkContent = document.getElementById('aiThinkContent');
+        const aiFinalPrompt = document.getElementById('aiFinalPrompt');
+        const generatedImage = document.getElementById('generatedImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        // 格式化思考内容（将换行转换为HTML段落）
+        function formatThinkContent(text) {
+            return text.split('\n')
+                      .filter(line => line.trim() !== '')
+                      .map(line => `<p>${line}</p>`)
+                      .join('');
+        }
+
+        // 添加模式切换处理
+        const inputModeRadios = document.getElementsByName('input_mode');
+        const userPromptTextarea = document.getElementById('userPrompt');
+        const generatePromptBtn = document.getElementById('generatePromptBtn');
+
+        // 监听模式切换
+        inputModeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'theme') {
+                    userPromptTextarea.placeholder = '请输入你想要生成的图片描述...';
+                    generatePromptBtn.textContent = '生成AI提示词';
+                } else {
+                    userPromptTextarea.placeholder = '请直接输入英文提示词...';
+                    generatePromptBtn.textContent = '生成图片';
+                }
+            });
+        });
+
+        // 修改表单提交处理
+        promptForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const inputMode = document.querySelector('input[name="input_mode"]:checked').value;
+            const userInput = userPromptTextarea.value;
+            
+            loadingIndicator.classList.remove('hidden');
+            promptResult.classList.add('hidden');
+            imageResult.classList.add('hidden');
+
+            try {
+                if (inputMode === 'theme') {
+                    // 原有的AI生成提示词流程
+                    loadingText.textContent = '正在生成AI提示词...';
+                    const response = await fetch('/generate-prompt', {
+                        method: 'POST',
+                        body: new FormData(this)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        aiThinkContent.innerHTML = formatThinkContent(data.think_content);
+                        aiFinalPrompt.textContent = data.final_prompt;
+                        promptResult.classList.remove('hidden');
+                        
+                        // 使用生成的提示词生成图片
+                        await generateImage(data.final_prompt);
+                    } else {
+                        alert(data.error || '生成提示词失败，请重试');
+                    }
+                } else {
+                    // 直接使用输入的提示词生成图片
+                    loadingText.textContent = '正在生成图片...';
+                    await generateImage(userInput);
+                }
+            } catch (error) {
+                alert('发生错误：' + error.message);
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // 抽取图片生成函数
+        async function generateImage(prompt) {
+            loadingText.textContent = '正在生成图片...';
+            
+            const imageFormData = new FormData();
+            imageFormData.append('ai_prompt', prompt);
+            imageFormData.append('aspect_ratio', document.querySelector('input[name="aspect_ratio"]:checked').value);
+            
+            const imageResponse = await fetch('/generate-image', {
+                method: 'POST',
+                body: imageFormData
+            });
+            
+            const imageData = await imageResponse.json();
+            
+            if (imageResponse.ok) {
+                generatedImage.src = imageData.image_url;
+                downloadBtn.href = `/download/${imageData.image_filename}`;
+                imageResult.classList.remove('hidden');
+            } else {
+                alert(imageData.error || '生成图片失败，请重试');
+            }
+        }
+
+        // 返回修改描述
+        document.getElementById('modifyPromptBtn').addEventListener('click', function() {
+            promptResult.classList.add('hidden');
+            imageResult.classList.add('hidden');
+        });
+
+        // 重新开始
+        document.getElementById('startOverBtn').addEventListener('click', function() {
+            promptForm.reset();
+            promptResult.classList.add('hidden');
+            imageResult.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
